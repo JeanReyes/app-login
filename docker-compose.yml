@@ -1,0 +1,12 @@
+services:
+  web:
+    container_name: react-dev
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3001:80"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    working_dir: /app
