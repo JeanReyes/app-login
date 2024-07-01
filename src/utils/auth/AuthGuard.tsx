@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useContext";
 
 interface Props {
@@ -11,6 +11,7 @@ export const AuthGuard = ({ children }: Props) => {
   const ignore = useRef(false);
   const [checked, setChecked] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     // if (!router.isReady) {
@@ -24,12 +25,12 @@ export const AuthGuard = ({ children }: Props) => {
     ignore.current = true;
 
     if (!isAuthenticated) {
-      console.log("Not authenticated, redirecting");
-      navigate("auth/login", { replace: true, state: { redirect: true } });
+      navigate("/auth/login", { replace: true, state: { redirect: true } });
     } else {
+      navigate(location.pathname, { replace: true });
       setChecked(true);
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, location.pathname]);
 
   if (!checked) {
     return null;

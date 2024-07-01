@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useReducer, useRef } from "react";
 import { User } from "../../interfaces/Auth";
 import { AuthReducer } from "./AuthReducer";
@@ -10,7 +11,12 @@ export interface AuthState {
 }
 
 const AUTH_INITIAL_STATE: AuthState = {
-  isAuthenticated: false,
+  isAuthenticated:
+    (typeof window !== "undefined"
+      ? JSON.parse(window.localStorage.getItem("authenticated") as string)
+      : null) !== null
+      ? true
+      : false,
   isLoading: true,
   user: {} as User,
 };
@@ -24,14 +30,13 @@ export const AuthProvider = ({ children }: Props) => {
   const initialized = useRef(false);
 
   const initialize = async () => {
-    // Prevent from calling twice in development mode with React.StrictMode enabled
     if (initialized.current) {
       return;
     }
 
     initialized.current = true;
 
-    let isAuthenticated = false;
+    let isAuthenticated = stateAuth.isAuthenticated;
 
     try {
       isAuthenticated = window.localStorage.getItem("authenticated") === "true";
@@ -60,8 +65,6 @@ export const AuthProvider = ({ children }: Props) => {
   };
 
   const signIn = async (email: string, password: string): Promise<boolean> => {
-    console.log({ email, password });
-
     try {
       window.localStorage.setItem("authenticated", "true");
       const user: User = {
@@ -105,3 +108,5 @@ export const AuthProvider = ({ children }: Props) => {
     </AuthContext.Provider>
   );
 };
+
+export const AuthConsumer = AuthContext.Consumer;

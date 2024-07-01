@@ -15,7 +15,7 @@ export const Login = () => {
     e.preventDefault();
     const res = await signIn(username, password);
     if (res) {
-      navigate(`${DASHBOARD}/about`);
+      navigate(`${DASHBOARD}`);
     }
   };
 
